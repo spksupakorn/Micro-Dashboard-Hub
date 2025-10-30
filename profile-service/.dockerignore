@@ -1,0 +1,47 @@
+# Git version control files
+.git
+.gitignore
+.gitattributes
+
+# Go build artifacts
+# These are the compiled binaries.
+# If your app is named 'main', add 'main'
+# If it outputs to 'bin/', add 'bin/'
+/app
+/main
+/bin/
+
+# Dependency directory
+# Usually, you want 'go mod download' inside the Dockerfile
+# to leverage layer caching, so you don't copy the local 'vendor' folder.
+vendor/
+/vendor/
+
+# Environment files
+.env
+*.env
+.env.*
+
+# IDE/Editor configuration
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+logs/
+
+# Docker files
+# Prevents Dockerfile and compose files from being copied INTO the image
+Dockerfile
+docker-compose.yml
+docker-compose.yaml
+
+# Documentation
+README.md
+LICENSE

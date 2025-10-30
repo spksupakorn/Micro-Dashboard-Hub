@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ProfileService</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .navbar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .navbar h2 {
+            color: #11998e;
+        }
+        .navbar a {
+            color: #11998e;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .navbar a:hover {
+            background: #e9f7f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            color: #11998e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #11998e;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #555;
+        }
+        .info-value {
+            color: #333;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stat-card h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .success-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>📊 ProfileService Dashboard</h2>
+        <div>
+            <a href="/">Home</a>
+            <a href="http://localhost:8080">AuthService</a>
+            <a href="http://localhost:8082/invoices">Billing Service</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <span class="success-badge">✅ SSO Authentication Successful</span>
+            <h3>User Profile</h3>
+            <div class="info-row">
+                <span class="info-label">User ID:</span>
+                <span class="info-value">{{.UserID}}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Full Name:</span>
+                <span class="info-value">{{.FullName}}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{.Email}}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Service:</span>
+                <span class="info-value">ProfileService (Port 8081)</span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Profile Statistics</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>Profile Completeness</h4>
+                    <div class="value">100%</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Login Streak</h4>
+                    <div class="value">15 days</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Account Age</h4>
+                    <div class="value">6 months</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>SSO Test Information</h3>
+            <p style="margin-bottom: 15px;">
+                You successfully accessed this protected dashboard using Single Sign-On (SSO). 
+                The authentication was handled by the central AuthService.
+            </p>
+            <p style="margin-bottom: 15px;">
+                <strong>Next Step:</strong> Try accessing the BillingService dashboard. 
+                You should be able to access it immediately without logging in again, 
+                demonstrating the SSO functionality.
+            </p>
+            <a href="http://localhost:8082/invoices" style="display: inline-block; background: #11998e; color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; margin-top: 10px;">
+                Go to Billing Service →
+            </a>
+        </div>
+    </div>
+</body>
+</html>

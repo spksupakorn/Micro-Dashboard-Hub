@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProfileService - Home</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #11998e;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #11998e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .btn:hover {
+            background: #0e8075;
+        }
+        .info-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .info-box p {
+            margin: 10px 0;
+            color: #333;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 ProfileService</h1>
+        <p class="subtitle">Service Provider 1 (SP1) - Port 8081</p>
+        
+        {{if .Authenticated}}
+            <div class="info-box">
+                <p><strong>✅ You are logged in!</strong></p>
+                <p><strong>Email:</strong> {{.Email}}</p>
+                <p><strong>Name:</strong> {{.FullName}}</p>
+            </div>
+            
+            <a href="/dashboard" class="btn">View Dashboard</a>
+            
+            <div class="button-group">
+                <a href="http://localhost:8082/invoices" class="btn btn-secondary">💳 Billing Service</a>
+                <a href="/logout" class="btn btn-secondary">Logout</a>
+            </div>
+        {{else}}
+            <div class="info-box">
+                <p>This is a protected service. You need to authenticate via the central AuthService to access the dashboard.</p>
+                <p style="margin-top: 15px;"><strong>Click below to login:</strong></p>
+            </div>
+            
+            <a href="/dashboard" class="btn">Access Dashboard</a>
+            
+            <p style="text-align: center; margin-top: 20px; color: #666; font-size: 14px;">
+                You will be redirected to the AuthService for login
+            </p>
+        {{end}}
+    </div>
+</body>
+</html>

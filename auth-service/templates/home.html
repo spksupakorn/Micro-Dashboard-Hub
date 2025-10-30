@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuthService - Home</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .user-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .user-info p {
+            margin: 10px 0;
+            color: #333;
+        }
+        .user-info strong {
+            color: #667eea;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #333;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 AuthService</h1>
+        <p class="subtitle">Central Identity Provider (IdP)</p>
+        
+        {{if .Authenticated}}
+            <div class="user-info">
+                <h2 style="color: #667eea; margin-bottom: 15px;">Welcome Back!</h2>
+                <p><strong>Email:</strong> {{.User.Email}}</p>
+                <p><strong>Name:</strong> {{.User.FullName}}</p>
+                <p><strong>User ID:</strong> {{.User.ID}}</p>
+            </div>
+            
+            <div class="info-box">
+                <p><strong>✅ You are authenticated!</strong></p>
+                <p>You can now access protected services without logging in again.</p>
+            </div>
+            
+            <div class="button-group">
+                <a href="http://localhost:8081/dashboard" class="btn btn-primary">📊 Profile Service</a>
+                <a href="http://localhost:8082/invoices" class="btn btn-primary">💳 Billing Service</a>
+                <a href="/logout" class="btn btn-danger">Logout</a>
+            </div>
+        {{else}}
+            <div class="info-box">
+                <p><strong>Welcome to the SSO Demo</strong></p>
+                <p>Login once and access all services seamlessly.</p>
+            </div>
+            
+            <div class="button-group">
+                <a href="/login" class="btn btn-primary">Login</a>
+                <a href="/register" class="btn btn-secondary">Register</a>
+            </div>
+            
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+                <p style="color: #666; font-size: 14px; text-align: center; margin-bottom: 10px;">
+                    Try accessing these protected services:
+                </p>
+                <div class="button-group">
+                    <a href="http://localhost:8081/dashboard" class="btn btn-secondary" style="font-size: 14px;">Profile Service</a>
+                    <a href="http://localhost:8082/invoices" class="btn btn-secondary" style="font-size: 14px;">Billing Service</a>
+                </div>
+            </div>
+        {{end}}
+    </div>
+</body>
+</html>

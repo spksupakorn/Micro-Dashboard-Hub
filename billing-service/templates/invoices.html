@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoices - BillingService</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .navbar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .navbar h2 {
+            color: #f5576c;
+        }
+        .navbar a {
+            color: #f5576c;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .navbar a:hover {
+            background: #fff0f2;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            color: #f5576c;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f5576c;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #555;
+        }
+        .info-value {
+            color: #333;
+        }
+        .success-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .invoice-table th {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        .invoice-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .invoice-table tr:hover {
+            background: #f8f9fa;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-paid {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .total-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f5576c;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>💳 BillingService Dashboard</h2>
+        <div>
+            <a href="/">Home</a>
+            <a href="http://localhost:8080">AuthService</a>
+            <a href="http://localhost:8081/dashboard">Profile Service</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <span class="success-badge">✅ SSO Authentication Successful</span>
+            <h3>Account Information</h3>
+            <div class="info-row">
+                <span class="info-label">User ID:</span>
+                <span class="info-value">{{.UserID}}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Full Name:</span>
+                <span class="info-value">{{.FullName}}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{.Email}}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Service:</span>
+                <span class="info-value">BillingService (Port 8082)</span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Your Invoices</h3>
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>INV-2024-001</td>
+                        <td>Oct 15, 2025</td>
+                        <td>Monthly Subscription - Premium Plan</td>
+                        <td>$99.00</td>
+                        <td><span class="status-badge status-paid">Paid</span></td>
+                    </tr>
+                    <tr>
+                        <td>INV-2024-002</td>
+                        <td>Oct 20, 2025</td>
+                        <td>Additional Storage - 100GB</td>
+                        <td>$15.00</td>
+                        <td><span class="status-badge status-paid">Paid</span></td>
+                    </tr>
+                    <tr>
+                        <td>INV-2024-003</td>
+                        <td>Oct 28, 2025</td>
+                        <td>API Usage - October</td>
+                        <td>$45.00</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                    </tr>
+                    <tr>
+                        <td>INV-2024-004</td>
+                        <td>Oct 30, 2025</td>
+                        <td>Support Package - Enterprise</td>
+                        <td>$199.00</td>
+                        <td><span class="status-badge status-paid">Paid</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 20px; text-align: right; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+                <span style="font-size: 14px; color: #666; margin-right: 20px;">Total Amount:</span>
+                <span class="total-amount">$358.00</span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>SSO Test - Success! 🎉</h3>
+            <p style="margin-bottom: 15px;">
+                <strong>Congratulations!</strong> You successfully accessed this protected billing dashboard using Single Sign-On (SSO). 
+                Notice that you didn't have to log in again after accessing the ProfileService.
+            </p>
+            <p style="margin-bottom: 15px;">
+                This demonstrates how SSO works:
+            </p>
+            <ul style="margin-left: 20px; margin-bottom: 15px; line-height: 1.8;">
+                <li>You logged in once at the AuthService</li>
+                <li>The AuthService created a session cookie in your browser</li>
+                <li>When you accessed ProfileService, you were redirected to AuthService</li>
+                <li>AuthService saw you were already logged in and issued a JWT</li>
+                <li>Now when accessing BillingService, the same process happened seamlessly</li>
+            </ul>
+            <p>
+                <strong>Key Point:</strong> Each service maintains its own session, but authentication is centralized. 
+                This is the essence of Single Sign-On!
+            </p>
+        </div>
+    </div>
+</body>
+</html>

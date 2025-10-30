@@ -1,0 +1,90 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sso_postgres
+    env_file: .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - sso_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sso_user -d sso_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  auth_service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth_service
+    ports:
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
+    env_file: .env
+    environment:
+      - PORT=${AUTH_SERVICE_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+      - SESSION_SECRET=${SESSION_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sso_network
+    restart: unless-stopped
+
+  profile_service:
+    build:
+      context: ./profile-service
+      dockerfile: Dockerfile
+    container_name: profile_service
+    ports:
+      - "${PROFILE_SERVICE_PORT}:${PROFILE_SERVICE_PORT}"
+    env_file: .env
+    environment:
+      - PORT=${PROFILE_SERVICE_PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL}
+      - SERVICE_URL=${PROFILE_SERVICE_URL}
+    networks:
+      - sso_network
+    restart: unless-stopped
+
+  billing_service:
+    build:
+      context: ./billing-service
+      dockerfile: Dockerfile
+    container_name: billing_service
+    ports:
+      - "${BILLING_SERVICE_PORT}:${BILLING_SERVICE_PORT}"
+    env_file: .env
+    environment:
+      - PORT=${BILLING_SERVICE_PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL}
+      - SERVICE_URL=${BILLING_SERVICE_URL}
+    networks:
+      - sso_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  sso_network:
+    driver: bridge
