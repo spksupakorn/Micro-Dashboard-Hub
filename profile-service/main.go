@@ -14,9 +14,11 @@ import (
 )
 
 type Claims struct {
-	UserID   int    `json:"user_id"`
-	Email    string `json:"email"`
-	FullName string `json:"full_name"`
+	UserID    int    `json:"user_id"`
+	Email     string `json:"email"`
+	FullName  string `json:"full_name"`
+	SessionID string `json:"session_id"` // For session tracking
+	TokenType string `json:"token_type"` // "access" or "refresh"
 	jwt.RegisteredClaims
 }
 
@@ -66,25 +68,63 @@ func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 		userID := session.Get("user_id")
+		sessionID := session.Get("session_id")
+
+		log.Printf("authMiddleware: userID=%v, sessionID=%v, path=%s", userID, sessionID, c.Request.URL.Path)
+
+		// Get URLs (for browser redirects)
+		authServiceURL := os.Getenv("AUTH_SERVICE_URL")
+		if authServiceURL == "" {
+			authServiceURL = "http://localhost:8080"
+		}
+
+		serviceURL := os.Getenv("SERVICE_URL")
+		if serviceURL == "" {
+			serviceURL = "http://localhost:8081"
+		}
 
 		if userID == nil {
 			// Not authenticated, redirect to AuthService
-			authServiceURL := os.Getenv("AUTH_SERVICE_URL")
-			if authServiceURL == "" {
-				authServiceURL = "http://localhost:8080"
-			}
-
-			serviceURL := os.Getenv("SERVICE_URL")
-			if serviceURL == "" {
-				serviceURL = "http://localhost:8081"
-			}
-
 			redirectURI := serviceURL + "/auth/callback"
 			authURL := authServiceURL + "/auth?redirect_uri=" + url.QueryEscape(redirectURI)
 
 			c.Redirect(http.StatusFound, authURL)
 			c.Abort()
 			return
+		}
+
+		// Validate session with AuthService
+		if sessionID != nil {
+			// Use internal URL for server-to-server communication
+			authServiceInternalURL := os.Getenv("AUTH_SERVICE_INTERNAL_URL")
+			if authServiceInternalURL == "" {
+				authServiceInternalURL = authServiceURL // Fallback to public URL
+			}
+
+			// Check if session is still valid
+			validateURL := authServiceInternalURL + "/session/validate?session_id=" + sessionID.(string)
+			resp, err := http.Get(validateURL)
+			if err != nil || (resp != nil && resp.StatusCode != http.StatusOK) {
+				if err != nil {
+					log.Printf("Session validation error: %v (URL: %s)", err, validateURL)
+				} else {
+					log.Printf("Session validation failed: HTTP %d (session_id: %s)", resp.StatusCode, sessionID.(string))
+				}
+
+				// Session invalid, clear local session and redirect to login
+				session.Clear()
+				session.Save()
+
+				redirectURI := serviceURL + "/auth/callback"
+				authURL := authServiceURL + "/auth?redirect_uri=" + url.QueryEscape(redirectURI)
+
+				c.Redirect(http.StatusFound, authURL)
+				c.Abort()
+				return
+			}
+			if resp != nil {
+				resp.Body.Close()
+			}
 		}
 
 		c.Next()
@@ -111,6 +151,7 @@ func handleHome(c *gin.Context) {
 
 func handleCallback(c *gin.Context) {
 	token := c.Query("token")
+	refreshToken := c.Query("refresh_token")
 
 	if token == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Token is required"})
@@ -129,6 +170,13 @@ func handleCallback(c *gin.Context) {
 	session.Set("user_id", claims.UserID)
 	session.Set("email", claims.Email)
 	session.Set("full_name", claims.FullName)
+	session.Set("session_id", claims.SessionID)
+
+	// Store refresh token if provided (for future token renewal)
+	if refreshToken != "" {
+		session.Set("refresh_token", refreshToken)
+	}
+
 	session.Save()
 
 	// Redirect to dashboard
